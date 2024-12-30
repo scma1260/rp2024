@@ -98,7 +98,7 @@ def spawn_random_primitive():
     
     # Create the object with zero mass (kinematic object)
     object_id = bullet_client.createMultiBody(
-        baseMass=0.0,  # Setting mass to 0 to make the object kinematic
+        baseMass=0.2,  # Setting mass to make the object kinematic
         baseCollisionShapeIndex=collision_shape, 
         baseVisualShapeIndex=visual_shape, 
         basePosition=random_translation
@@ -138,10 +138,6 @@ robot.ptp(pre_gasp_pose)
 gripper.open()
 robot.lin(target_pose)
 gripper.close()
-
-#random_noise = np.random.randint(0, 256, (480, 640, 3), dtype=np.uint8)
-#cv2.imshow("random noise", random_noise)
-#cv2.waitKey(0)
 
 robot.ptp(home_pose)
 
