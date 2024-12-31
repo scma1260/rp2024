@@ -1,8 +1,3 @@
-# ToDo:
-# - Kollisionsüberprüfung
-# - Formen überprüfen bzw. ander verwenden?
-
-# Import the necessary libraries
 import time
 import pybullet as p
 import numpy as np
@@ -43,112 +38,133 @@ robot.home()
 table_x_min, table_x_max = 0.3, 0.9
 table_y_min, table_y_max = -0.3, 0.3
 
+# Minimum distance between objects and obstacles
+min_distance = 0.05
+
+# Function to check if a position is valid (not colliding with existing objects)
+def is_valid_position(new_position, existing_positions, min_distance):
+    for pos in existing_positions:
+        if np.linalg.norm(np.array(new_position) - np.array(pos)) < min_distance:
+            return False
+    return True
+
 # Create a random object spawn function for primitive shapes
-def spawn_random_primitive():
-    # Randomly choose an object type
-    object_type = np.random.choice(['box', 'sphere', 'cylinder', 'capsule'])
-    
-    # Define random position and scale
-    random_translation = [
-        np.random.uniform(table_x_min, table_x_max),  # x position
-        np.random.uniform(table_y_min, table_y_max), # y position
-        0.1  # z position
-    ]
-    
-    scale = np.random.uniform(0.1, 0.5)  # Size scale
+def spawn_random_primitive(existing_positions):
+    while True:
+        # Randomly choose an object type
+        #object_type = np.random.choice(['box', 'sphere', 'cylinder', 'capsule'])
+        object_type = np.random.choice(['box', 'sphere', 'cylinder'])
 
-    # Define colors
-    def generate_non_gray_color():
-        while True:
-            # Random values for Red, Green, and Blue
-            color = [np.random.random(), np.random.random(), np.random.random(), 1]
+        # Define random position and scale
+        random_translation = [
+            np.random.uniform(table_x_min, table_x_max),  # x position
+            np.random.uniform(table_y_min, table_y_max), # y position
+            0.01  # z position
+        ]
         
-            # Check if the color is not gray
-            if not (color[0] == color[1] == color[2] == 0.5):
-                return color
-            
-    color = generate_non_gray_color()
-    
-    if object_type == 'box':
-        half_extents = np.random.uniform(0.05, 0.1, 3) * scale  # Random size for the box
-        collision_shape = bullet_client.createCollisionShape(p.GEOM_BOX, halfExtents=half_extents)
-        visual_shape = bullet_client.createVisualShape(p.GEOM_BOX, halfExtents=half_extents, rgbaColor=color)
-    elif object_type == 'sphere':
-        radius = np.random.uniform(0.05, 0.1) * scale
-        collision_shape = bullet_client.createCollisionShape(p.GEOM_SPHERE, radius=radius)
-        visual_shape = bullet_client.createVisualShape(p.GEOM_SPHERE, radius=radius, rgbaColor=color)
-    elif object_type == 'cylinder':
-        radius = np.random.uniform(0.05, 0.1) * scale
-        height = np.random.uniform(0.1, 0.3) * scale
-        collision_shape = bullet_client.createCollisionShape(p.GEOM_CYLINDER, radius=radius, height=height)
-        visual_shape = bullet_client.createVisualShape(p.GEOM_CYLINDER, radius=radius, length=height, rgbaColor=color)
-    elif object_type == 'capsule':
-        radius = np.random.uniform(0.05, 0.1) * scale
-        height = np.random.uniform(0.1, 0.3) * scale
-        collision_shape = bullet_client.createCollisionShape(p.GEOM_CAPSULE, radius=radius, height=height)
-        visual_shape = bullet_client.createVisualShape(p.GEOM_CAPSULE, radius=radius, length=height, rgbaColor=color)
-  
-    # Create the object with zero mass (kinematic object)
-    object_id = bullet_client.createMultiBody(
-        baseMass=10,  # Setting mass to make the object kinematic
-        baseCollisionShapeIndex=collision_shape, 
-        baseVisualShapeIndex=visual_shape, 
-        basePosition=random_translation
-    )
+        if not is_valid_position(random_translation, existing_positions, min_distance):
+            continue
+        
+        scale = np.random.uniform(0.1, 0.5)  # Size scale
 
-    return object_id
+        # Define colors
+        def generate_non_gray_color():
+            while True:
+                # Random values for Red, Green, and Blue
+                color = [np.random.random(), np.random.random(), np.random.random(), 1]
+            
+                # Check if the color is not gray
+                if not (color[0] == color[1] == color[2] == 0.5):
+                    return color
+                
+        color = generate_non_gray_color()
+        
+        if object_type == 'box':
+            half_extents = np.random.uniform(0.05, 0.1, 3) * scale  # Random size for the box
+            collision_shape = bullet_client.createCollisionShape(p.GEOM_BOX, halfExtents=half_extents)
+            visual_shape = bullet_client.createVisualShape(p.GEOM_BOX, halfExtents=half_extents, rgbaColor=color)
+        elif object_type == 'sphere':
+            radius = np.random.uniform(0.05, 0.1) * scale
+            collision_shape = bullet_client.createCollisionShape(p.GEOM_SPHERE, radius=radius)
+            visual_shape = bullet_client.createVisualShape(p.GEOM_SPHERE, radius=radius, rgbaColor=color)
+        elif object_type == 'cylinder':
+            radius = np.random.uniform(0.05, 0.1) * scale
+            height = np.random.uniform(0.1, 0.3) * scale
+            collision_shape = bullet_client.createCollisionShape(p.GEOM_CYLINDER, radius=radius, height=height)
+            visual_shape = bullet_client.createVisualShape(p.GEOM_CYLINDER, radius=radius, length=height, rgbaColor=color)
+        elif object_type == 'capsule':
+            radius = np.random.uniform(0.05, 0.1) * scale
+            height = np.random.uniform(0.1, 0.3) * scale
+            collision_shape = bullet_client.createCollisionShape(p.GEOM_CAPSULE, radius=radius, height=height)
+            visual_shape = bullet_client.createVisualShape(p.GEOM_CAPSULE, radius=radius, length=height, rgbaColor=color)
+    
+        # Create the object with zero mass (kinematic object)
+        object_id = bullet_client.createMultiBody(
+            baseMass=10,  # Setting mass to make the object kinematic
+            baseCollisionShapeIndex=collision_shape, 
+            baseVisualShapeIndex=visual_shape, 
+            basePosition=random_translation
+        )
+
+        existing_positions.append(random_translation)
+        return object_id
 
 # Spawn a random number of objects
 num_objects = np.random.randint(2, 5)
 object_ids = []
+existing_positions = []
 
 for _ in range(num_objects):
-    object_id = spawn_random_primitive()
+    object_id = spawn_random_primitive(existing_positions)
     object_ids.append(object_id)
-    object_id = object_id
 
 # Create a random obstacle spawn function for primitive shapes
-def spawn_random_obstacle():
-    # Randomly choose an obstacle type
-    obstacle_type = np.random.choice(['box', 'cylinder'])
-    
-    # Define random position and scale
-    random_translation = [
-        np.random.uniform(table_x_min, table_x_max),  # x position
-        np.random.uniform(table_y_min, table_y_max), # y position
-        0.1  # z position
-    ]
-    
-    scale = np.random.uniform(0.1, 0.5)  # Size scale
-         
-    color = [0.5, 0.5, 0.5, 1]  # Gray color
-    
-    if obstacle_type == 'box':
-        half_extents = np.random.uniform(0.05, 0.1, 3) * scale  # Random size for the box
-        collision_shape = bullet_client.createCollisionShape(p.GEOM_BOX, halfExtents=half_extents)
-        visual_shape = bullet_client.createVisualShape(p.GEOM_BOX, halfExtents=half_extents, rgbaColor=color)
-    elif obstacle_type == 'cylinder':
-        radius = np.random.uniform(0.05, 0.1) * scale
-        height = np.random.uniform(0.1, 0.3) * scale
-        collision_shape = bullet_client.createCollisionShape(p.GEOM_CYLINDER, radius=radius, height=height)
-        visual_shape = bullet_client.createVisualShape(p.GEOM_CYLINDER, radius=radius, length=height, rgbaColor=color)
-    
-    # Create the object with zero mass (kinematic object)
-    obstacle_id = bullet_client.createMultiBody(
-        baseMass=0,  # Setting mass to make the object kinematic
-        baseCollisionShapeIndex=collision_shape, 
-        baseVisualShapeIndex=visual_shape, 
-        basePosition=random_translation
-    )
+def spawn_random_obstacle(existing_positions, min_distance):
+    while True:
+        # Randomly choose an obstacle type
+        obstacle_type = np.random.choice(['box', 'cylinder'])
+        
+        # Define random position and scale
+        random_translation = [
+            np.random.uniform(table_x_min, table_x_max),  # x position
+            np.random.uniform(table_y_min, table_y_max), # y position
+            0.1  # z position
+        ]
+        
+        if not is_valid_position(random_translation, existing_positions, min_distance):
+            continue
+        
+        scale = np.random.uniform(0.1, 0.5)  # Size scale
+             
+        color = [0.5, 0.5, 0.5, 1]  # Gray color
+        
+        if obstacle_type == 'box':
+            half_extents = np.random.uniform(0.05, 0.1, 3) * scale  # Random size for the box
+            collision_shape = bullet_client.createCollisionShape(p.GEOM_BOX, halfExtents=half_extents)
+            visual_shape = bullet_client.createVisualShape(p.GEOM_BOX, halfExtents=half_extents, rgbaColor=color)
+        elif obstacle_type == 'cylinder':
+            radius = np.random.uniform(0.05, 0.1) * scale
+            height = np.random.uniform(0.1, 0.3) * scale
+            collision_shape = bullet_client.createCollisionShape(p.GEOM_CYLINDER, radius=radius, height=height)
+            visual_shape = bullet_client.createVisualShape(p.GEOM_CYLINDER, radius=radius, length=height, rgbaColor=color)
+        
+        # Create the object with zero mass (kinematic object)
+        obstacle_id = bullet_client.createMultiBody(
+            baseMass=0,  # Setting mass to make the object kinematic
+            baseCollisionShapeIndex=collision_shape, 
+            baseVisualShapeIndex=visual_shape, 
+            basePosition=random_translation
+        )
 
-    return obstacle_id
+        existing_positions.append(random_translation)
+        return obstacle_id
 
 # Spawn a random number of obstacles
 num_obstacles = np.random.randint(8, 15)
 obstacle_ids = []
 
 for _ in range(num_obstacles):
-    obstacle_id = spawn_random_obstacle()
+    obstacle_id = spawn_random_obstacle(existing_positions, min_distance)
     obstacle_ids.append(obstacle_id)
 
 # Define the target area
@@ -176,4 +192,3 @@ for _ in range(1000):
 
 # close the simulation
 bullet_client.disconnect()
-
