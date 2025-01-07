@@ -66,6 +66,8 @@ RUN pip install --no-cache-dir numpy opencv-python opencv-contrib-python
 RUN pip install --no-cache-dir pybullet
 RUN pip install --no-cache-dir loguru
 RUN pip install --no-cache-dir scipy
+RUN pip install --no-cache-dir pandas
+RUN pip install --no-cache-dir openpyxl
 
 ENV PYTHONPATH=/home/$USER/workspace/src:$PYTHONPATH
 

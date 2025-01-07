@@ -81,15 +81,18 @@ def create_environment(render=True, urdf_path="/home/jovyan/workspace/assets/urd
                 half_extents = np.random.uniform(min_size, max_size, 3)
                 collision_shape = bullet_client.createCollisionShape(p.GEOM_BOX, halfExtents=half_extents)
                 visual_shape = bullet_client.createVisualShape(p.GEOM_BOX, halfExtents=half_extents, rgbaColor=color)
+                size_x, size_y, size_z = half_extents
             elif object_type == 'sphere':
                 radius = np.random.uniform(min_size, max_size)
                 collision_shape = bullet_client.createCollisionShape(p.GEOM_SPHERE, radius=radius)
                 visual_shape = bullet_client.createVisualShape(p.GEOM_SPHERE, radius=radius, rgbaColor=color)
+                size_x = size_y = radius
             elif object_type == 'cylinder':
                 radius = np.random.uniform(min_size, max_size)
                 height = np.random.uniform(min_size, max_size)
                 collision_shape = bullet_client.createCollisionShape(p.GEOM_CYLINDER, radius=radius, height=height)
                 visual_shape = bullet_client.createVisualShape(p.GEOM_CYLINDER, radius=radius, length=height, rgbaColor=color)
+                size_x = size_y = radius
 
             object_id = bullet_client.createMultiBody(
                 baseMass=0.5,
@@ -99,7 +102,7 @@ def create_environment(render=True, urdf_path="/home/jovyan/workspace/assets/urd
             )
 
             existing_positions.append(random_translation)
-            return object_id
+            return object_id, size_x, size_y
 
     def spawn_random_obstacle(existing_positions, min_distance):
         while True:
@@ -121,11 +124,13 @@ def create_environment(render=True, urdf_path="/home/jovyan/workspace/assets/urd
                 half_extents = np.random.uniform(min_size, max_size, 3)
                 collision_shape = bullet_client.createCollisionShape(p.GEOM_BOX, halfExtents=half_extents)
                 visual_shape = bullet_client.createVisualShape(p.GEOM_BOX, halfExtents=half_extents, rgbaColor=color)
+                size_x, size_y, size_z = half_extents
             elif obstacle_type == 'cylinder':
                 radius = np.random.uniform(min_size, max_size)
                 height = np.random.uniform(min_size, max_size)
                 collision_shape = bullet_client.createCollisionShape(p.GEOM_CYLINDER, radius=radius, height=height)
                 visual_shape = bullet_client.createVisualShape(p.GEOM_CYLINDER, radius=radius, length=height, rgbaColor=color)
+                size_x = size_y = radius
 
             obstacle_id = bullet_client.createMultiBody(
                 baseMass=0,
@@ -135,7 +140,7 @@ def create_environment(render=True, urdf_path="/home/jovyan/workspace/assets/urd
             )
 
             existing_positions.append(random_translation)
-            return obstacle_id
+            return obstacle_id, size_x, size_y
 
     # Spawn objects and obstacles
     num_objects = np.random.randint(2, 5)
@@ -143,15 +148,26 @@ def create_environment(render=True, urdf_path="/home/jovyan/workspace/assets/urd
     existing_positions = []
 
     for _ in range(num_objects):
-        object_id = spawn_random_primitive(existing_positions)
-        object_ids.append(object_id)
+        object_id, size_x, size_y = spawn_random_primitive(existing_positions)
+        obj = {
+            "id": object_id,
+            "size_x": size_x,
+            "size_y": size_y
+        }
+        object_ids.append(obj)
 
     num_obstacles = np.random.randint(5, 8)
     obstacle_ids = []
 
     for _ in range(num_obstacles):
-        obstacle_id = spawn_random_obstacle(existing_positions, min_distance)
-        obstacle_ids.append(obstacle_id)
+        obstacle_id, size_x, size_y = spawn_random_obstacle(existing_positions, min_distance)
+        obj = {
+            "id": obstacle_id,
+            "size_x": size_x,
+            "size_y": size_y
+        }
+        obstacle_ids.append(obj)
+
 
     # Define the target area
     target_area_center = [1, 0, 0]
