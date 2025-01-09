@@ -71,7 +71,7 @@ def main():
         object_pose = Affine(object_position, object_quat)
 
         gripper_rotation = Affine(rotation=[0, np.pi, 0])
-        target_pose = object_pose * gripper_rotation * Affine(translation=[0, 0, -0.01])
+        target_pose = object_pose * gripper_rotation * Affine(translation=[0, 0, -0.01])    # 1cm above the object middle point so Gripper dosent collide with table
         pre_grap_offset = Affine(translation=[0, 0, -0.1])
         pre_gasp_pose = target_pose * pre_grap_offset
         robot.ptp(pre_gasp_pose)

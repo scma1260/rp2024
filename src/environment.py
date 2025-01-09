@@ -73,8 +73,8 @@ def create_environment(render=True, urdf_path="/home/jovyan/workspace/assets/urd
             if not is_valid_position(random_translation, existing_positions, min_distance):
                 continue
 
-            max_size = 0.035
-            min_size = 0.02
+            max_size = 0.035    # max size Gripper can grip when open
+            min_size = 0.02     # min size Gripper can grip when closed
             color = generate_non_gray_color()
 
             if object_type == 'box':
