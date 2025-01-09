@@ -4,6 +4,8 @@ This repository contains the code for the project asigmnment of the robot progra
 
 The full requirement and task description can be finde [here](Project_Task.md).
 
+![](example.gif)
+
 ## Quick start
 
 ### Environment setup
