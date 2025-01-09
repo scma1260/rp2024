@@ -44,9 +44,9 @@ def create_environment(render=True, urdf_path="/home/jovyan/workspace/assets/urd
     # Move the robot to the home position
     robot.home()
 
-    # Define table boundaries
-    table_x_min, table_x_max = 0.3, 0.9
-    table_y_min, table_y_max = -0.3, 0.3
+    # Define table boundarie
+    table_x_min, table_x_max = 0.38, 0.82
+    table_y_min, table_y_max = -0.22, 0.22
     min_distance = 0.13
 
     def is_valid_position(new_position, existing_positions, min_distance):
@@ -133,7 +133,7 @@ def create_environment(render=True, urdf_path="/home/jovyan/workspace/assets/urd
                 size_x = size_y = radius
 
             obstacle_id = bullet_client.createMultiBody(
-                baseMass=0,
+                baseMass=10,
                 baseCollisionShapeIndex=collision_shape,
                 baseVisualShapeIndex=visual_shape,
                 basePosition=random_translation

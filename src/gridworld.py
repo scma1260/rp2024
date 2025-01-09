@@ -4,12 +4,18 @@ import pandas as pd
 class GridWorld:
 
     def __init__(self,bullet_client, object_id, obstacle_ids):
-        # Agent position
-        self.agent_init_pos = self.get_blocking_states(bullet_client, [object_id])
-        # 
-        self.blocking_states = self.get_blocking_states(bullet_client, obstacle_ids)
+        # Dimensions of the GridWorld.
+        self.world_shape = (62, 50)
+
         # Dictionary of rewards with key: position and value: reward.
-        self.reward_states = {(x, y): 1 for x in range(104, 119) for y in range(42, 57)}
+        self.reward_states = {(x, y): 1 for x in range(52, 60) for y in range(21, 29)}
+
+        # initial position of the agent
+        self.agent_init_pos = self.get_blocking_states(bullet_client, [object_id])
+
+        # list of blocking state positions
+        self.blocking_states = self.get_blocking_states(bullet_client, obstacle_ids)
+        
 
         # the action representations are now integers, to make indexing and sampling for TD learning simpler
         self.possible_actions = {
@@ -23,20 +29,19 @@ class GridWorld:
         self.agent_current_pos = self.agent_init_pos
         # list of collected rewards, to not collect rewards twice
         self.collected_rewards = []
+        
     
-    # Dimensions of the GridWorld.
-    world_shape = (125, 100)
 
     # Initial position in grid world.
     def position_to_world_index(self, coordinates):
         x_min, x_max = 0.3, 1.05
         y_min, y_max = -0.3, 0.3
-        world_shape = (125, 100)
+    
 
         x = coordinates[0]
         y = coordinates[1]
-        x_pos = int((x - x_min) / (x_max - x_min) * world_shape[0])
-        y_pos = int((y - y_min) / (y_max - y_min) * world_shape[1])
+        x_pos = int((x - x_min) / (x_max - x_min) * self.world_shape[0])
+        y_pos = int((y - y_min) / (y_max - y_min) * self.world_shape[1])
         return x_pos, y_pos
     
     # List of blocking state positions.
