@@ -16,7 +16,6 @@ class GridWorld:
         # list of blocking state positions
         self.blocking_states = self.get_blocking_states(bullet_client, obstacle_ids)
         
-
         # the action representations are now integers, to make indexing and sampling for TD learning simpler
         self.possible_actions = {
             0: np.array([-1, 0]), # up
@@ -27,16 +26,15 @@ class GridWorld:
 
         # set initial agent position
         self.agent_current_pos = self.agent_init_pos
+
         # list of collected rewards, to not collect rewards twice
         self.collected_rewards = []
         
     
-
     # Initial position in grid world.
     def position_to_world_index(self, coordinates):
         x_min, x_max = 0.3, 1.05
         y_min, y_max = -0.3, 0.3
-    
 
         x = coordinates[0]
         y = coordinates[1]
@@ -68,7 +66,6 @@ class GridWorld:
             'blocking': 8
         }
 
-
         # Initialize empty states.
         states = np.ones(self.world_shape) * legend['empty']
         
@@ -88,27 +85,26 @@ class GridWorld:
         for reward_state, reward in self.reward_states.items():
             states[reward_state] = reward
         
-    
         # Save states as Excel file
         df = pd.DataFrame(states)
         df.to_excel('./gridworld_states.xlsx', index=False, header=False)
 
         return states
     
-    #TODO: Fit the move_agent method.
     def move_agent(self, action):
         # move agent
-        new_agent_pos = np.array(self.agent_current_pos) + self.possible_actions[action]
+        new_agent_pos = [np.array(pos) + self.possible_actions[action] for pos in self.agent_current_pos]
 
         # check if new position is blocked
-        if tuple(new_agent_pos) in self.blocking_states:
+        if any(tuple(pos) in self.blocking_states for pos in new_agent_pos):
             return self.agent_current_pos
 
         # check if new position is out of bounds
-        if (new_agent_pos < 0).any() or (new_agent_pos >= self.world_shape).any():
-            return self.agent_current_pos
+        for pos in new_agent_pos:
+            if (pos < 0).any() or (pos >= self.world_shape).any():
+                return self.agent_current_pos
 
-        return tuple(new_agent_pos)
+        return new_agent_pos
     
     def reset(self):
         # reset agent position
