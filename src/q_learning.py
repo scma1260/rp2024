@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class QAgent():
     def __init__(self, n_actions, world_shape, learning_rate=0.2, discount_factor=0.9):
         self.n_actions = n_actions
