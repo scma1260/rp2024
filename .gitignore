@@ -2,3 +2,6 @@
 *sample_solution.py
 
 src/*.xlsx
+
+# Changed Docker file for longer pip timeout
+Dockerfile

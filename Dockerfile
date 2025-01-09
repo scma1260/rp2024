@@ -62,8 +62,8 @@ RUN mkdir -p /home/$USER/data
 ##                               Dependencies                               ##
 ##############################################################################
 FROM user as dependencies
-RUN pip install --no-cache-dir numpy opencv-python opencv-contrib-python
-RUN pip install --no-cache-dir pybullet
+RUN pip install --no-cache-dir --timeout=3600 --retries=10 numpy opencv-python opencv-contrib-python
+RUN pip install --no-cache-dir --timeout=3600 --retries=10 pybullet
 RUN pip install --no-cache-dir loguru
 RUN pip install --no-cache-dir scipy
 RUN pip install --no-cache-dir pandas
