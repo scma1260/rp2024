@@ -73,8 +73,8 @@ def create_environment(render=True, urdf_path="/home/jovyan/workspace/assets/urd
             if not is_valid_position(random_translation, existing_positions, min_distance):
                 continue
 
-            max_size = 0.05
-            min_size = 0.012
+            max_size = 0.035
+            min_size = 0.02
             color = generate_non_gray_color()
 
             if object_type == 'box':
@@ -89,7 +89,7 @@ def create_environment(render=True, urdf_path="/home/jovyan/workspace/assets/urd
                 size_x = size_y = radius
             elif object_type == 'cylinder':
                 radius = np.random.uniform(min_size, max_size)
-                height = np.random.uniform(min_size, max_size)
+                height = np.random.uniform(min_size, max_size) * 2
                 collision_shape = bullet_client.createCollisionShape(p.GEOM_CYLINDER, radius=radius, height=height)
                 visual_shape = bullet_client.createVisualShape(p.GEOM_CYLINDER, radius=radius, length=height, rgbaColor=color)
                 size_x = size_y = radius
