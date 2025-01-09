@@ -1,8 +1,8 @@
-# Robot programming HKA WS 2024
+# Project Assignment: Pushing While Avoiding Obstacles
 
-This repository contains the code for the robot programming course (the policy learning part) at the University of Applied Sciences Karlsruhe.
+This repository contains the code for the project asigmnment of the robot programming course.
 
-We will use and update this repository throughout the course.
+The full requirement and task description can be finde [here](Project_Task.md).
 
 ## Quick start
 
@@ -22,14 +22,7 @@ Run the container with
 ```bash
 ./run_container.sh
 ```
-
-Check whether you can open a window from the container by running
+To start the simulation run
 ```bash
-python view_noise_image.py
+python main.py
 ```
-A window should pop up showing a random noise image. You can close it by pressing any key, while the window is focused.
-
-### Basics
-Check out the `basics.py` script to get familiar with the API we use and the `Affine` class.
-
-If you want to understand a bit more how everything works under the hood, check out the scripts in the `bullet_env` folder as well as the `transform.py` file.
