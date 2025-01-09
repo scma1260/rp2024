@@ -22,13 +22,13 @@ You can adapt the simulation framework as required.
 
 ### Deliverables
 
-**7. Code**: Submit your code in a well-organized GitHub repository. Include a README file with instructions on setting up and running your project.
+**1. Code**: Submit your code in a well-organized GitHub repository. Include a README file with instructions on setting up and running your project.
 
-**8. Presentation**: Present your results in one of the following formats:  
+**2. Presentation**: Present your results in one of the following formats:  
    - A PowerPoint presentation  
    - A Jupyter Notebook
 
-**9. Documentation**: In your presentation or notebook, include the following:
+**3. Documentation**: In your presentation or notebook, include the following:
    - The rationale behind your choice of algorithm (imitation learning or reinforcement learning).
    - The steps and considerations taken to improve policy convergence.
    - Any challenges faced during the project and how you addressed them.
