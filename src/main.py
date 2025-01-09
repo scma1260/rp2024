@@ -70,14 +70,6 @@ def main():
         object_position, object_quat = bullet_client.getBasePositionAndOrientation(object_id["id"])
         object_pose = Affine(object_position, object_quat)
 
-        end_position, end_quat = bullet_client.getBasePositionAndOrientation(target_area_id)
-        end_pose = Affine(end_position, end_quat)
-
-        # implement grasping the object
-        # keep in mind, that the object pose is defined in the world frame, and the eef points downwards
-        # also, make sure that before grasping the gripper is open
-        # consider adding a pre-grasp pose to ensure the object is grasped correctly without collision during approach
-
         gripper_rotation = Affine(rotation=[0, np.pi, 0])
         target_pose = object_pose * gripper_rotation * Affine(translation=[0, 0, -0.01])
         pre_grap_offset = Affine(translation=[0, 0, -0.1])
@@ -99,36 +91,6 @@ def main():
         gripper.open()
 
         robot.ptp(home_pose)
-
-    # for object_id in object_ids:
-    #     # get current object pose
-    #     object_position, object_quat = bullet_client.getBasePositionAndOrientation(object_id["id"])
-    #     object_pose = Affine(object_position, object_quat)
-    #     end_position, end_quat = bullet_client.getBasePositionAndOrientation(target_area_id)
-    #     end_pose = Affine(end_position, end_quat)
-    #     # implement grasping the object
-    #     # keep in mind, that the object pose is defined in the world frame, and the eef points downwards
-    #     # also, make sure that before grasping the gripper is open
-    #     # consider adding a pre-grasp pose to ensure the object is grasped correctly without collision during approach
-    #     gripper_rotation = Affine(rotation=[0, np.pi, 0])
-    #     target_pose = object_pose * gripper_rotation
-    #     pre_grap_offset = Affine(translation=[0, 0, -0.1])
-    #     pre_gasp_pose = target_pose * pre_grap_offset
-    #     robot.ptp(pre_gasp_pose)
-    #     gripper.open()
-    #     robot.lin(target_pose)
-    #     gripper.close()
-    #     # actual_pose = robot.get_eef_pose()
-    #     # actual_pose = move_robot(actual_pose, "left", robot)
-    #     # actual_pose = move_robot(actual_pose, "forward", robot)
-    #     # actual_pose = move_robot(actual_pose, "right", robot)
-    #     # actual_pose = move_robot(actual_pose, "backward", robot)    
-    #     # Move the object to the target area
-    #     end_pose = end_pose * gripper_rotation
-    #     robot.ptp(end_pose)
-    #     gripper.open()
-    #     robot.ptp(home_pose)
-
 
     input()
     # Close the simulation
