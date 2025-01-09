@@ -1,4 +1,5 @@
 def train(agent, env, steps):
+    print("Start train")
     # reset environment and get initial observation
     obs = env.reset()
     for i in range(steps):
@@ -14,7 +15,10 @@ def train(agent, env, steps):
         if done:
             obs = env.reset()
 
+    print("end train")
+
 def test(agent, env, max_steps=162):
+    print("Start test")
     # reset environment and get initial observation
     obs = env.reset()
     
@@ -39,4 +43,6 @@ def test(agent, env, max_steps=162):
         # set obs to new observation obs_1
         obs = obs_1
         n_steps += 1
+
+    print("end test")
     return cumulated_reward, path

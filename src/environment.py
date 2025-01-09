@@ -143,7 +143,7 @@ def create_environment(render=True, urdf_path="/home/jovyan/workspace/assets/urd
             return obstacle_id, size_x, size_y
 
     # Spawn objects and obstacles
-    num_objects = np.random.randint(2, 5)
+    num_objects = np.random.randint(2, 4)
     object_ids = []
     existing_positions = []
 
@@ -156,7 +156,7 @@ def create_environment(render=True, urdf_path="/home/jovyan/workspace/assets/urd
         }
         object_ids.append(obj)
 
-    num_obstacles = np.random.randint(5, 8)
+    num_obstacles = np.random.randint(3, 5)
     obstacle_ids = []
 
     for _ in range(num_obstacles):

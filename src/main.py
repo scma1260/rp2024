@@ -1,7 +1,10 @@
 import time
 import numpy as np
+import pandas as pd
 from environment import create_environment
 from gridworld import GridWorld
+from q_learning import QAgent
+from train import *
 from transform import Affine
 
 
@@ -29,11 +32,34 @@ def main():
         bullet_client.stepSimulation()
         time.sleep(1 / 100)
 
+    robot.ptp(home_pose)
+
     # Sort object_ids by the x value of their positions in descending order
-    # object_ids.sort(key=lambda obj_id: bullet_client.getBasePositionAndOrientation(obj_id["id"])[0][0], reverse=True)
+    object_ids.sort(key=lambda obj_id: bullet_client.getBasePositionAndOrientation(obj_id["id"])[0][0], reverse=True)
     
-    gridworld = GridWorld(bullet_client, object_ids[0], obstacle_ids)
-    gridworld.render_environment()
+    env = GridWorld(bullet_client, object_ids[0], obstacle_ids)
+    # env.render_environment()
+    obs = env.reset()
+    agent = QAgent(len(env.possible_actions), env.world_shape)
+    train(agent, env, 50000)
+
+    df = pd.DataFrame(agent.q_table.argmax(axis=0))
+    df.to_excel('./argmax_q.xlsx', index=False, header=False)
+
+    cumulated_reward, path = test(agent, env)
+    print('cumulated reward', cumulated_reward)
+
+    def render_path(env, path):
+        states = env.render_environment()
+        for position in path:
+            for pos in position:
+                states[tuple(pos)] = 3
+        
+        df = pd.DataFrame(states)
+        df.to_excel('./rendered_path.xlsx', index=False, header=False)
+
+    render_path(env, path)
+    
     # for object_id in object_ids:
     #     # get current object pose
     #     object_position, object_quat = bullet_client.getBasePositionAndOrientation(object_id)
