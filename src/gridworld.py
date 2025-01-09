@@ -19,6 +19,7 @@ class GridWorld:
 
         # list of blocking state positions
         self.blocking_states = self.get_blocking_states(bullet_client, obstacle_ids)
+        self.blocking_states += [(x, y) for x in range(62) for y in [0, 49]] + [(x, y) for x in [0, 61] for y in range(50)]
         
         # the action representations are now integers, to make indexing and sampling for TD learning simpler
         self.possible_actions = {

@@ -24,7 +24,8 @@ def test(agent, env, max_steps=162):
     
     # record path of agent in a list of positions; the fist position is the initial observation
     path = [obs]
-    
+    moves = []
+
     # initialize the cumulated reward as 0
     cumulated_reward = 0.0
     
@@ -38,6 +39,7 @@ def test(agent, env, max_steps=162):
         obs_1, r, done = env.step(action)
         # record path of agent
         path.append(obs_1)
+        moves.append(action)
         # increment cumulated reward by received reward
         cumulated_reward += r
         # set obs to new observation obs_1
@@ -45,4 +47,4 @@ def test(agent, env, max_steps=162):
         n_steps += 1
 
     print("end test")
-    return cumulated_reward, path
+    return cumulated_reward, path, moves
