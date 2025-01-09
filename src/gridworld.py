@@ -10,6 +10,9 @@ class GridWorld:
         # Dictionary of rewards with key: position and value: reward.
         self.reward_states = {(x, y): 1 for x in range(52, 60) for y in range(21, 29)}
 
+        # List of terminal states.
+        self.terminal_states = self.reward_states.keys()
+
         # initial position of the agent
         self.agent_init_pos = self.get_blocking_states(bullet_client, [object_id])
 
@@ -116,7 +119,6 @@ class GridWorld:
         observation = np.copy(self.agent_current_pos)
         return observation
     
-    #TODO: Fit the step method.
     def step(self, action):
         # execute action
         self.agent_current_pos = self.move_agent(action)
@@ -125,12 +127,13 @@ class GridWorld:
         done = False
         
         # check if there is any reward
-        if tuple(self.agent_current_pos) in self.reward_states.keys() and tuple(self.agent_current_pos) not in self.collected_rewards:
-            reward += self.reward_states[tuple(self.agent_current_pos)]
-            self.collected_rewards.append(tuple(self.agent_current_pos))
+        for pos in self.agent_current_pos:
+            if tuple(pos) in self.reward_states.keys() and tuple(pos) not in self.collected_rewards:
+                reward += self.reward_states[tuple(pos)]
+                self.collected_rewards.append(tuple(pos))
         
         # check if there is any reward and whether the game ended
-        if tuple(self.agent_current_pos) in self.terminal_states:
+        if all(tuple(pos) in self.terminal_states for pos in self.agent_current_pos):
             done = True
             
         # render observation
