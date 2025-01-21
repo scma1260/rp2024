@@ -2,7 +2,7 @@
 
 This repository contains the code for the project asigmnment of the robot programming course.
 
-The full requirement and task description can be finde [here](Project_Task.md).
+The full requirement and task description can be finde [here](Project_Task.md). Our methodic and problems can be seen [here](methodik.md).
 
 ![](example.gif)
 
